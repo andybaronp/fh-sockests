@@ -1,11 +1,17 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
+import { SockectContex } from "../context/SocetContext"
 
 
-const ListBand = ({ bandList, handleVote, onChangeSoket, removeBand }) => {
-  const [bands, setBands] = useState(bandList)
+const ListBand = () => {
+  const [bands, setBands] = useState([])
+  const { socket } = useContext(SockectContex)
   useEffect(() => {
-    setBands(bandList)
-  }, [bandList])
+    socket.on('currentBands', (data) => {
+      setBands(data)
+    })
+
+    return () => socket.off('currentBands')
+  }, [socket])
 
 
 
@@ -14,8 +20,17 @@ const ListBand = ({ bandList, handleVote, onChangeSoket, removeBand }) => {
     setBands(bands => bands.map(b => b.id === band.id ? { ...b, name } : b))
   }
 
+  const handleBlur = (id, name) => {
+    socket.emit('change-band-name', { id, name })
+  }
 
+  const handleVote = (id) => {
+    socket.emit('vote-band', id)
+  }
 
+  const removeBand = (id) => {
+    socket.emit('remove-band', id)
+  }
   const rowsList = (band) => {
 
     return (<tr key={band.id}>
@@ -24,7 +39,7 @@ const ListBand = ({ bandList, handleVote, onChangeSoket, removeBand }) => {
         className="form-control
         " value={band.name}
         onChange={(e) => hadleName(e, band)}
-        onBlur={() => onChangeSoket(band.id, band.name)} /></td>
+        onBlur={() => handleBlur(band.id, band.name)} /></td>
       <td><h4>{band.votes}</h4></td>
       <td><button className="btn btn-danger" onClick={() => removeBand(band.id)}>Borrar</button></td>
     </tr>)
