@@ -2,6 +2,7 @@ import { useContext } from "react"
 import BandAdd from "./components/BandAdd"
 import ListBand from "./components/ListBand"
 import { SockectContex } from "./context/SocetContext"
+import BandChart from "./components/BandChart"
 
 
 function App() {
@@ -19,6 +20,11 @@ function App() {
       <h1>BandName</h1>
       <hr />
       <div className="row">
+        <div className="col">
+          <BandChart />
+        </div>
+      </div>
+      <div className="row">
         <div className="col-8">
           <ListBand />
         </div>
@@ -26,6 +32,7 @@ function App() {
         <div className="col-4">
           <BandAdd />
         </div>
+
       </div>
     </div>
   )
